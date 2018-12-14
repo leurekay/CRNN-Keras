@@ -39,6 +39,10 @@ class TextData(object):
         label=name.split('_')[1]
         
         return image,label
+    
+    
+    def get_batch(self,indexes,new_shape):
+        pass
 
 
 if __name__=='__main__':
