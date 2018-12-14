@@ -90,7 +90,7 @@ class CRNNCTCNetwork(object):
 
 
 if __name__=='__main__':
-    crnn=CRNNCTCNetwork('train',256,20,26,(32,326,3))
+    crnn=CRNNCTCNetwork('train',256,20,26,(32,100,3))
     model=crnn.build_network()
     print (model.summary())
-#    plot_model(model, to_file='../data/model.jpg',show_shapes=True)
+    plot_model(model, to_file='../data/model.jpg',show_shapes=True)
