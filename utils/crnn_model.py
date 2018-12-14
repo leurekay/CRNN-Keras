@@ -24,7 +24,10 @@ from keras.layers.normalization import BatchNormalization
 from keras.optimizers import SGD
 
 from keras.utils import np_utils  
-from keras.utils import plot_model  
+from keras.utils import plot_model 
+from keras.layers.core import Lambda
+
+#def expand_last_dim() 
 
 
 class CRNNCTCNetwork(object):
@@ -75,12 +78,19 @@ class CRNNCTCNetwork(object):
 #        x=Bidirectional(LSTM(units=self.__hidden_num,return_sequences=True))(x)
         x=LSTM(units=self.__hidden_num,return_sequences=True)(x)
         
+        _,n_t,n_logit=x.shape.as_list()
+#        x=keras.backend.expand_dims(x, axis=-1)
+#        x=Conv2D(self.__num_classes, (1, n_logit), strides=(1,1), padding='valid', activation='softmax')(x)
+        
+        x=Dense(units=self.__num_classes,activation='softmax')(x)
+        
+        print (n_t,n_logit,x.shape.as_list(),type(x))
         model=Model(inputs=self.input_tensor,outputs=x)
         return model
 
 
 if __name__=='__main__':
-    crnn=CRNNCTCNetwork('train',256,20,26,(32,None,3))
+    crnn=CRNNCTCNetwork('train',256,20,26,(32,326,3))
     model=crnn.build_network()
     print (model.summary())
-    plot_model(model, to_file='../data/model.jpg',show_shapes=True)
+#    plot_model(model, to_file='../data/model.jpg',show_shapes=True)
