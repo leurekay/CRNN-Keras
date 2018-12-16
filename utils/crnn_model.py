@@ -31,7 +31,7 @@ from keras.layers.core import Lambda
 
 
 class CRNNCTCNetwork(object):
-    def __init__(self, phase, hidden_num, layers_num, num_classes, input_tensor_shape=(32,128,3)):
+    def __init__(self, phase, hidden_num, layers_num, num_classes, input_tensor_shape=(32,100,3)):
         self.__phase = phase.lower()
         self.__hidden_num = hidden_num
         self.__layers_num = layers_num
@@ -54,7 +54,7 @@ class CRNNCTCNetwork(object):
         
         x = Conv2D(256, (3, 3), strides=(1,1), padding='same', activation='relu')(x)
         x = Conv2D(256, (3, 3), strides=(1,1), padding='same', activation='relu')(x)
-        x = MaxPooling2D(pool_size=(1,2),strides=(2,2))(x)
+        x = MaxPooling2D(pool_size=(2,1),strides=(2,1))(x)
         
         x = Conv2D(512, (3, 3), strides=(1,1), padding='same', activation='relu')(x)
         x = BatchNormalization()(x)
@@ -62,9 +62,9 @@ class CRNNCTCNetwork(object):
         x = Conv2D(512, (3, 3), strides=(1,1), padding='same', activation='relu')(x)
         x = BatchNormalization()(x)
         
-        x = MaxPooling2D(pool_size=(1,2),strides=(2,2))(x)
+        x = MaxPooling2D(pool_size=(2,1),strides=(2,1))(x)
         
-        x = Conv2D(512, (2, 2), strides=(1,1), padding='valid', activation='relu')(x)
+        x = Conv2D(512, (2, 1), strides=(1,1), padding='valid', activation='relu')(x)
 #        x=keras.backend.squeeze(x, axis=0)
 #        x=keras.backend.expand_dims(x, axis=-1)
         x=Reshape((-1,512))(x)
@@ -90,7 +90,7 @@ class CRNNCTCNetwork(object):
 
 
 if __name__=='__main__':
-    crnn=CRNNCTCNetwork('train',256,20,26,(32,100,3))
+    crnn=CRNNCTCNetwork('train',256,20,37,(32,100,3))
     model=crnn.build_network()
     print (model.summary())
     plot_model(model, to_file='../data/model.jpg',show_shapes=True)
