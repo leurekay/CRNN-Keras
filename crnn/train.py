@@ -6,6 +6,7 @@ Created on Tue Dec 11 09:11:05 2018
 @author: ly
 """
 
+from keras import backend as K
 import json
 
 from utils import crnn_model
