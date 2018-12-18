@@ -57,6 +57,7 @@ class TextData(object):
     def __getitem__(self,index):
         assert index<self.__len__
         image,txt=self.__raw_item__(index)
+        image=image/255.
         width,height=self.resize_shape
         try:
             image = cv2.resize(image, (width, height))    
@@ -65,7 +66,7 @@ class TextData(object):
             return -99,[-99],-99
             
         label=txt2int(txt,self.map_dict,self.max_label_len)
-        print (index,txt)
+#        print (index,txt)
         return image,label,txt
     
     
@@ -88,15 +89,25 @@ class TextData(object):
         while True:
             end=min(self.__len__,start+batch_size)
             indexs=range(start,end)
-            images,labels,lengths=self.get_batch(indexs)
+            images,labels,label_lengths=self.get_batch(indexs)
             
             if end==self.__len__:
                 start=0
                 self.__shuffle()
             else:
                 start+=batch_size
+
+
+            inputs = {
+                'the_input': images,  # (bs, 128, 64, 1)
+                'the_labels': labels,  # (bs, 8)
+                'input_length': 25*np.ones((batch_size,1)),  # (bs, 1) -> 모든 원소 value = 30
+                'label_length': label_lengths  # (bs, 1) -> 모든 원소 value = 8
+            }
+            outputs = {'ctc': np.zeros([batch_size])}   # (bs, 1) -> 모든 원소 0
+            yield (inputs, outputs)
             
-            yield(images,labels,lengths)
+#            yield(images,labels,label_lengths)
      
 
 

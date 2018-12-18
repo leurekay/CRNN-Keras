@@ -26,8 +26,13 @@ char_map_dict = json.load(open('../data/char_map.json', 'r'))
 
 txtdata=load_data.TextData(data_dir,char_map_dict,(100,32),9)
 
-#model.compile(optimizer='adam',
-#              loss='ctc')
+model.compile(optimizer='adam',
+              loss={'ctc': lambda y_true, y_pred: y_pred})
+
+
+model.fit_generator(generator=txtdata.next_batch(64),
+                    steps_per_epoch=100,
+                    epochs=3,)
 
 if __name__=='__main__':
     pass
