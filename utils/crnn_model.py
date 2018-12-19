@@ -127,10 +127,21 @@ class CRNNCTCNetwork(object):
         return model
 
 def wrap_ctc_loss(y_true,y_pred):
-        labels = y_true['the_labels']
-        input_length = y_true['input_length']
-        label_length = y_true['label_length']
-        return K.ctc_batch_cost(labels, y_pred, input_length, label_length)
+        y_true=tf.reshape(y_true,[32,9])
+        mask_label=tf.greater(y_true,-0.5)
+        int_label=tf.cast(mask_label,tf.int16)
+        label_length=tf.reduce_sum(int_label,axis=1)
+        label_length=tf.reshape(label_length,[-1,1])
+#        shape=label_length.get_shape().as_list()
+        
+        input_length=tf.constant(25,shape=(32,1))
+        print (y_true.get_shape().as_list())
+        print (y_pred.get_shape().as_list())
+        print (input_length.get_shape().as_list())
+        print (label_length.get_shape().as_list())
+        
+        
+        return K.ctc_batch_cost(y_true, y_pred, input_length, label_length)
 
 
 if __name__=='__main__':

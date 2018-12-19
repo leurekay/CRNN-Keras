@@ -27,10 +27,10 @@ char_map_dict = json.load(open('../data/char_map.json', 'r'))
 txtdata=load_data.TextData(data_dir,char_map_dict,(100,32),9,25)
 
 model.compile(optimizer='adam',
-              loss={'ctc': lambda y_true, y_pred: y_pred})
+              loss=crnn_model.wrap_ctc_loss)
 
 
-model.fit_generator(generator=txtdata.next_batch(64),
+model.fit_generator(generator=txtdata.next_batch(32),
                     steps_per_epoch=30,
                     epochs=3,)
 
