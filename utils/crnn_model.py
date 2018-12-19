@@ -133,6 +133,12 @@ class CRNNCTCNetwork(object):
 #        model=Model(inputs=self.input_tensor,outputs=x)
         return model
 
+def wrap_ctc_loss(y_true,y_pred):
+        labels = y_true['the_labels']
+        input_length = y_true['input_length']
+        label_length = y_true['label_length']
+        return K.ctc_batch_cost(labels, y_pred, input_length, label_length)
+
 
 if __name__=='__main__':
     crnn=CRNNCTCNetwork('train',256,20,37,(32,100,3))

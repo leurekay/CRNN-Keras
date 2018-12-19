@@ -25,10 +25,11 @@ def txt2int(txt,map_dict,max_len):
 
 
 class TextData(object):
-    def __init__(self,image_dir,map_dict,resize_shape,max_label_len):
+    def __init__(self,image_dir,map_dict,resize_shape,max_label_len,input_len):
         self.map_dict=map_dict
         self.resize_shape=resize_shape
         self.max_label_len=max_label_len
+        self.input_len=input_len
         walk=os.walk(image_dir)
         box=[]
         for root, dirs, files in walk:
@@ -57,7 +58,7 @@ class TextData(object):
     def __getitem__(self,index):
         assert index<self.__len__
         image,txt=self.__raw_item__(index)
-        image=image/255.
+#        image=image/255.
         width,height=self.resize_shape
         try:
             image = cv2.resize(image, (width, height))    
@@ -101,7 +102,7 @@ class TextData(object):
             inputs = {
                 'the_input': images,  # (bs, 128, 64, 1)
                 'the_labels': labels,  # (bs, 8)
-                'input_length': 25*np.ones((batch_size,1)),  # (bs, 1) -> 모든 원소 value = 30
+                'input_length': self.input_len*np.ones((batch_size,1)),  # (bs, 1) -> 모든 원소 value = 30
                 'label_length': label_lengths  # (bs, 1) -> 모든 원소 value = 8
             }
             outputs = {'ctc': np.zeros([batch_size])}   # (bs, 1) -> 모든 원소 0
@@ -118,7 +119,7 @@ if __name__=='__main__':
     char_map_dict = json.load(open('../data/char_map.json', 'r'))
 
     
-    txtdata=TextData(data_dir,char_map_dict,(100,32),9)
+    txtdata=TextData(data_dir,char_map_dict,(100,32),9,25)
     ll=txtdata.file_list
     
     image=txtdata.__getitem__(432)
