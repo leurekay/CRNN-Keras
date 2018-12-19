@@ -123,14 +123,7 @@ class CRNNCTCNetwork(object):
         x=Dense(units=self.__num_classes,activation='softmax')(x)
         
         
-        
-        labels = Input(name='the_labels', shape=[9], dtype='float32')
-        input_length = Input(name='input_length', shape=[1], dtype='int64')
-        label_length = Input(name='label_length', shape=[1], dtype='int64')
-        loss_out = Lambda(ctc_lambda_func, output_shape=(1,), name='ctc')([x, labels, input_length, label_length])
-        model = Model(inputs=[self.input_tensor, labels, input_length, label_length], outputs=[loss_out])
-        
-#        model=Model(inputs=self.input_tensor,outputs=x)
+        model=Model(inputs=self.input_tensor,outputs=x)
         return model
 
 def wrap_ctc_loss(y_true,y_pred):

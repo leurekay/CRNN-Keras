@@ -99,17 +99,9 @@ class TextData(object):
                 start+=batch_size
 
 
-            inputs = {
-                'the_input': images,  # (bs, 128, 64, 1)
-                'the_labels': labels,  # (bs, 8)
-                'input_length': self.input_len*np.ones((batch_size,1)),  # (bs, 1) -> 모든 원소 value = 30
-                'label_length': label_lengths  # (bs, 1) -> 모든 원소 value = 8
-            }
-            outputs = {'ctc': np.zeros([batch_size])}   # (bs, 1) -> 모든 원소 0
-            yield (inputs, outputs)
-            
-#            yield(images,labels,label_lengths)
-     
+   
+            yield (images,labels)
+                 
 
 
 if __name__=='__main__':
