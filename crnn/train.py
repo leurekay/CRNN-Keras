@@ -20,9 +20,14 @@ from utils import load_data
 
 check_dir='../data/checkpoints'
 
-data_dir='../data/synth90k'
+data_dir='../data/synth90k/train'
+valid_dir='../data/synth90k/valid'
 
-crnn=crnn_model.CRNNCTCNetwork('train',256,20,37,(32,100,3))
+EPOCHS=10
+BATCH_SIZE=64
+
+
+crnn=crnn_model.CRNNCTCNetwork('train',256,20,37,(32,None,3))
 model=crnn.build_network()
 
 
@@ -31,6 +36,9 @@ char_map_dict = json.load(open('../data/char_map.json', 'r'))
 
 
 txtdata=load_data.TextData(data_dir,char_map_dict,(100,32),9,25)
+txtdata_valid=load_data.TextData(valid_dir,char_map_dict,(100,32),9,25)
+
+
 
 model.compile(optimizer='adam',
               loss={'ctc': lambda y_true, y_pred: y_pred})
@@ -44,10 +52,12 @@ checkpoint=ModelCheckpoint(filepath=os.path.join(check_dir,'epoch:{epoch:03d}-lo
 
 
 
-model.fit_generator(generator=txtdata.next_batch(64),
+model.fit_generator(generator=txtdata.next_batch(BATCH_SIZE),
                     callbacks=[checkpoint],
-                    steps_per_epoch=30,
-                    epochs=3,)
+                    steps_per_epoch=txtdata.__nums__/BATCH_SIZE/5,
+                    validation_data=txtdata_valid.next_batch(BATCH_SIZE),
+                    validation_steps=txtdata_valid.__nums__/BATCH_SIZE,
+                    epochs=EPOCHS)
 
 
 

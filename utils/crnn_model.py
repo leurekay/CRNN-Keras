@@ -39,7 +39,7 @@ def ctc_lambda_func(args):
 
 
 class CRNNCTCNetwork(object):
-    def __init__(self, phase, hidden_num, layers_num, num_classes, input_tensor_shape=(32,100,3)):
+    def __init__(self, phase, hidden_num, layers_num, num_classes, input_tensor_shape):
         self.__phase = phase.lower()
         self.__hidden_num = hidden_num
         self.__layers_num = layers_num
@@ -111,7 +111,7 @@ class CRNNCTCNetwork(object):
 
 
     def build_network(self):
-        x=self.__feature_sequence_extraction2()
+        x=self.__feature_sequence_extraction()
         
 #        x=Bidirectional(LSTM(units=self.__hidden_num,return_sequences=True))(x)
         x=LSTM(units=self.__hidden_num,return_sequences=True)(x)

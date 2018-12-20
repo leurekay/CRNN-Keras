@@ -37,7 +37,7 @@ class TextData(object):
                 if name.endswith('jpg'):
                     box.append(os.path.join(root,name))
         self.file_list=box
-        self.__len__=len(box)
+        self.__nums__=len(box)
         self.__index__=np.array(range(len(box)))
     def __shuffle(self):
         ind=np.array(range(len(self.file_list)))
@@ -46,7 +46,7 @@ class TextData(object):
 
     
     def __raw_item__(self,index):
-        assert index<self.__len__
+        assert index<self.__nums__
         image_path=self.file_list[index]
         image = cv2.imread(image_path)
      
@@ -56,7 +56,7 @@ class TextData(object):
         return image,txt        
     
     def __getitem__(self,index):
-        assert index<self.__len__
+        assert index<self.__nums__
         image,txt=self.__raw_item__(index)
 #        image=image/255.
         width,height=self.resize_shape
@@ -78,21 +78,24 @@ class TextData(object):
         for index in indexs:
             image,label,txt=self.__getitem__(index)
             if label[0]==-99:
+                indexs.append(np.random.choice(self.__index__))
                 continue
             box_images.append(image)
             box_labels.append(label)
             box_length.append(len(txt))
-        return np.array(box_images),np.array(box_labels),np.array(box_length)
+        box_length=np.array(box_length)
+        input_length=self.input_len*np.ones(box_length.shape)
+        return np.array(box_images),np.array(box_labels),input_length,box_length
     
     
     def next_batch(self,batch_size):
         start=0
         while True:
-            end=min(self.__len__,start+batch_size)
+            end=min(self.__nums__,start+batch_size)
             indexs=range(start,end)
-            images,labels,label_lengths=self.get_batch(indexs)
+            images,labels,input_length,label_lengths=self.get_batch(indexs)
             
-            if end==self.__len__:
+            if end==self.__nums__:
                 start=0
                 self.__shuffle()
             else:
@@ -102,7 +105,7 @@ class TextData(object):
             inputs = {
                 'the_input': images,  # (bs, 128, 64, 1)
                 'the_labels': labels,  # (bs, 8)
-                'input_length': self.input_len*np.ones((batch_size,1)),  # (bs, 1) -> 모든 원소 value = 30
+                'input_length': input_length,  # (bs, 1) -> 모든 원소 value = 30
                 'label_length': label_lengths  # (bs, 1) -> 모든 원소 value = 8
             }
             outputs = {'ctc': np.zeros([batch_size])}   # (bs, 1) -> 모든 원소 0
