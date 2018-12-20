@@ -110,7 +110,10 @@ class CRNNCTCNetwork(object):
 
 
 
-    def build_network(self):
+    def build_network(self,max_label_length=None):
+        if self.__phase in ['train','valid']:
+            assert(max_label_length)
+        
         x=self.__feature_sequence_extraction()
         
 #        x=Bidirectional(LSTM(units=self.__hidden_num,return_sequences=True))(x)
@@ -124,14 +127,26 @@ class CRNNCTCNetwork(object):
         
         
         
-        labels = Input(name='the_labels', shape=[9], dtype='float32')
+        labels = Input(name='the_labels', shape=[max_label_length], dtype='float32')
         input_length = Input(name='input_length', shape=[1], dtype='int64')
         label_length = Input(name='label_length', shape=[1], dtype='int64')
         loss_out = Lambda(ctc_lambda_func, output_shape=(1,), name='ctc')([x, labels, input_length, label_length])
         model = Model(inputs=[self.input_tensor, labels, input_length, label_length], outputs=[loss_out])
         if self.__phase != 'train':
-            model=Model(inputs=self.input_tensor,outputs=x)
+            model=Model(inputs=[self.input_tensor,input_length],outputs=x)
         return model
+    
+#    def decode(self):
+##        input_length = Input(name='input_length', shape=[1], dtype='int64')
+#        model=self.build_network()
+#        input_image,input_length=model.input
+#
+#        softmax=model.output
+#        decode=K.ctc_decode(softmax, input_length, greedy=False, beam_width=100, top_paths=1)
+#        decode_model=Model(inputs=[input_image,input_length],outputs=decode)
+#        return decode_model
+        
+        
 
 def wrap_ctc_loss(y_true,y_pred):
         labels = y_true['the_labels']
@@ -141,7 +156,8 @@ def wrap_ctc_loss(y_true,y_pred):
 
 
 if __name__=='__main__':
-    crnn=CRNNCTCNetwork('train',256,20,37,(32,100,3))
-    model=crnn.build_network()
+    crnn=CRNNCTCNetwork('test',256,20,37,(32,100,3))
+    model=crnn.build_network(23)
+    decode_model=crnn.decode()
     print (model.summary())
 #    plot_model(model, to_file='../data/model.jpg',show_shapes=True)

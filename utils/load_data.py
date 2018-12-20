@@ -91,11 +91,12 @@ class TextData(object):
     def next_batch(self,batch_size):
         start=0
         while True:
-            end=min(self.__nums__,start+batch_size)
-            indexs=range(start,end)
+#            end=min(self.__nums__,start+batch_size)
+            end=start+batch_size
+            indexs=list(range(start,end))
             images,labels,input_length,label_lengths=self.get_batch(indexs)
             
-            if end==self.__nums__:
+            if end==self.__nums__-self.__nums__%batch_size:
                 start=0
                 self.__shuffle()
             else:
@@ -130,8 +131,8 @@ if __name__=='__main__':
     ooxx=txtdata.get_batch([3,45,23,8])
     
     box=[]
-    for i in txtdata.next_batch(32):
-        box.append(i)
+#    for i in txtdata.next_batch(32):
+#        box.append(i)
     
     img=cv2.imread('../data/synth90k/2911/6/77_heretical_35885.jpg')
     
