@@ -133,7 +133,7 @@ class CRNNCTCNetwork(object):
         loss_out = Lambda(ctc_lambda_func, output_shape=(1,), name='ctc')([x, labels, input_length, label_length])
         model = Model(inputs=[self.input_tensor, labels, input_length, label_length], outputs=[loss_out])
         if self.__phase != 'train':
-            model=Model(inputs=[self.input_tensor,input_length],outputs=x)
+            model=Model(inputs=self.input_tensor,outputs=x)
         return model
     
 #    def decode(self):
