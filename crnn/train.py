@@ -25,39 +25,39 @@ from crnn import config
 #set_session(tf.Session(config=tfconfig))
 
 
-CHAR_MAP_PATH=config.CHAR_MAP_PATH
-CHAR_MAP_DICT=config.CHAR_MAP_DICT
-NUM_CLASS=config.NUM_CLASS
+char_map_path=config.CHAR_MAP_PATH
+char_map_dict=config.CHAR_MAP_DICT
+num_class=config.NUM_CLASS
 
-TRAIN_W=config.TRAIN_W
-TRAIN_H=config.TRAIN_H
-MAX_LABEL_LENGTH=config.MAX_LABEL_LENGTH
+train_w=config.TRAIN_W
+train_h=config.TRAIN_H
+max_label_length=config.MAX_LABEL_LENGTH
 
-CHECKPOINT_DIR=config.CHECKPOINT_DIR
-TRAIN_DIR=config.TRAIN_DIR
-VALID_DIR=config.VALID_DIR
+checkpoint_dir=config.CHECKPOINT_DIR
+train_dir=config.TRAIN_DIR
+valid_dir=config.VALID_DIR
 
-EPOCHS= config.EPOCHS
-BATCH_SIZE=config.BATCH_SIZE
+epochs= config.EPOCHS
+batch_size=config.BATCH_SIZE
 
 
-crnn=crnn_model.CRNNCTCNetwork('train',256,20,NUM_CLASS,(TRAIN_H,None,3))
-model=crnn.build_network(max_label_length=MAX_LABEL_LENGTH)
+crnn=crnn_model.CRNNCTCNetwork('train',256,20,num_class,(train_h,None,3))
+model=crnn.build_network(max_label_length=max_label_length)
 
 
 
 #char_map_dict = json.load(open('../data/char_map.json', 'r'))
 
 
-txtdata=load_data.TextData(TRAIN_DIR,CHAR_MAP_DICT,(TRAIN_W,TRAIN_H),MAX_LABEL_LENGTH,25)
-txtdata_valid=load_data.TextData(VALID_DIR,CHAR_MAP_DICT,(TRAIN_W,TRAIN_H),MAX_LABEL_LENGTH,25)
+txtdata=load_data.TextData(train_dir,char_map_dict,(train_w,train_h),max_label_length,25)
+txtdata_valid=load_data.TextData(valid_dir,char_map_dict,(train_w,train_h),max_label_length,25)
 
 
 
 model.compile(optimizer='adam',
               loss={'ctc': lambda y_true, y_pred: y_pred})
 
-checkpoint=ModelCheckpoint(filepath=os.path.join(CHECKPOINT_DIR,'epoch:{epoch:03d}-loss:{loss:.3f}.h5'), 
+checkpoint=ModelCheckpoint(filepath=os.path.join(checkpoint_dir,'epoch:{epoch:03d}-loss:{loss:.3f}-val_loss:{val_loss:.3f}.h5'), 
                                 monitor='loss', 
                                 verbose=0, 
                                 save_best_only=False, 
@@ -66,12 +66,12 @@ checkpoint=ModelCheckpoint(filepath=os.path.join(CHECKPOINT_DIR,'epoch:{epoch:03
 
 
 
-model.fit_generator(generator=txtdata.next_batch(BATCH_SIZE),
+model.fit_generator(generator=txtdata.next_batch(batch_size),
                     callbacks=[checkpoint],
-                    steps_per_epoch=txtdata.__nums__/BATCH_SIZE,
-                    validation_data=txtdata_valid.next_batch(BATCH_SIZE),
-                    validation_steps=txtdata_valid.__nums__/BATCH_SIZE,
-                    epochs=EPOCHS)
+                    steps_per_epoch=txtdata.__nums__/batch_size,
+                    validation_data=txtdata_valid.next_batch(batch_size),
+                    validation_steps=txtdata_valid.__nums__/batch_size,
+                    epochs=epochs)
 
 
 

@@ -21,19 +21,22 @@ from utils import crnn_model
 from utils import load_data
 from crnn import config
 
-w=135
-h=32
-input_length=w/4
+h=config.TRAIN_H
 
+check_dir=config.CHECKPOINT_DIR
+check_path=os.path.join(check_dir,'epoch:002-loss:23.514-val_loss:23.822.h5')
 
-check_dir='../data/checkpoints'
-check_path=os.path.join(check_dir,'epoch:001-loss:24.174.h5')
-
-data_dir='../data/synth90k/valid-tmp/611/2'
+data_dir='../data/synth90k/train/1851/1'
 file_list=os.listdir(data_dir)
-image_path=os.path.join(data_dir,file_list[2])
-image = cv2.imread(image_path)
-image = cv2.resize(image, (w, h))    
+image_path=os.path.join(data_dir,file_list[32])
+
+
+image_raw = cv2.imread(image_path)
+height,width,_=image_raw.shape
+w=int((h*width)/height)
+input_length=int(w/4)
+
+image = cv2.resize(image_raw, (w, h))    
 image=np.expand_dims(image,axis=0)
 image=image/255.
 input_length=np.array([input_length])
