@@ -28,7 +28,7 @@ check_path=os.path.join(check_dir,'epoch:002-loss:23.514-val_loss:23.822.h5')
 
 data_dir='../data/synth90k/train/1851/1'
 file_list=os.listdir(data_dir)
-image_path=os.path.join(data_dir,file_list[32])
+image_path=os.path.join(data_dir,file_list[14])
 
 
 image_raw = cv2.imread(image_path)
@@ -41,13 +41,14 @@ image=np.expand_dims(image,axis=0)
 image=image/255.
 input_length=np.array([input_length])
 
+
+
 crnn=crnn_model.CRNNCTCNetwork('test',256,20,37,(h,w,3))
 model=crnn.build_network()
-
 model.load_weights(check_path, by_name=True)
+
+
 y_pred=model.predict(image)
-
-
 y_pred_labels_tensor_list, prob = keras.backend.ctc_decode(y_pred, input_length, greedy=True) # 使用的是最简单的贪婪算法
 y_pred_labels_tensor = y_pred_labels_tensor_list[0]
 y_pred_labels = keras.backend.get_value(y_pred_labels_tensor) # 现在还是字符编码

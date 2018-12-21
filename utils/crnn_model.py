@@ -53,25 +53,25 @@ class CRNNCTCNetwork(object):
         
         input_tensor=self.input_tensor
         #first 2 conv layers
-        x = Conv2D(64, (3, 3), strides=(1,1), padding='same', activation='relu', name='conv1')(input_tensor)
+        x = Conv2D(64, (3, 3), strides=(1,1), padding='same', activation='relu', kernel_initializer='he_normal',name='conv1')(input_tensor)
         x = MaxPooling2D(pool_size=(2,2),strides=(2,2), name='pool1')(x)
 
-        x = Conv2D(128, (3, 3), strides=(1,1), padding='same', activation='relu', name='conv2')(x)
+        x = Conv2D(128, (3, 3), strides=(1,1), padding='same', activation='relu', kernel_initializer='he_normal',name='conv2')(x)
         x = MaxPooling2D(pool_size=(2,2),strides=(2,2), name='pool2')(x)
         
-        x = Conv2D(256, (3, 3), strides=(1,1), padding='same', activation='relu', name='conv3')(x)
-        x = Conv2D(256, (3, 3), strides=(1,1), padding='same', activation='relu', name='conv4')(x)
+        x = Conv2D(256, (3, 3), strides=(1,1), padding='same', activation='relu',kernel_initializer='he_normal', name='conv3')(x)
+        x = Conv2D(256, (3, 3), strides=(1,1), padding='same', activation='relu', kernel_initializer='he_normal',name='conv4')(x)
         x = MaxPooling2D(pool_size=(2,1),strides=(2,1), name='pool3')(x)
         
-        x = Conv2D(512, (3, 3), strides=(1,1), padding='same', activation='relu', name='conv5')(x)
+        x = Conv2D(512, (3, 3), strides=(1,1), padding='same', activation='relu', kernel_initializer='he_normal',name='conv5')(x)
         x = BatchNormalization( name='bn1')(x)
         
-        x = Conv2D(512, (3, 3), strides=(1,1), padding='same', activation='relu', name='conv6')(x)
+        x = Conv2D(512, (3, 3), strides=(1,1), padding='same', activation='relu', kernel_initializer='he_normal',name='conv6')(x)
         x = BatchNormalization( name='bn2')(x)
         
         x = MaxPooling2D(pool_size=(2,1),strides=(2,1), name='pool4')(x)
         
-        x = Conv2D(512, (2, 1), strides=(1,1), padding='valid', activation='relu', name='conv7')(x)
+        x = Conv2D(512, (2, 1), strides=(1,1), padding='valid', activation='relu', kernel_initializer='he_normal',name='conv7')(x)
 #        x=keras.backend.squeeze(x, axis=0)
 #        x=keras.backend.expand_dims(x, axis=-1)
         x=Reshape((-1,512))(x)
@@ -115,14 +115,14 @@ class CRNNCTCNetwork(object):
         
         x=self.__feature_sequence_extraction()
         
-        x=Bidirectional(LSTM(units=self.__hidden_num,return_sequences=True), merge_mode='concat', name='bilstm1')(x)
+        x=Bidirectional(LSTM(units=self.__hidden_num,return_sequences=True,kernel_initializer='he_normal'), merge_mode='concat',name='bilstm1')(x)
 #        x=LSTM(units=self.__hidden_num,return_sequences=True)(x)
         
         _,n_t,n_logit=x.shape.as_list()
 #        x=keras.backend.expand_dims(x, axis=-1)
 #        x=Conv2D(self.__num_classes, (1, n_logit), strides=(1,1), padding='valid', activation='softmax')(x)
         
-        x=Dense(units=self.__num_classes,activation='softmax', name='dense1')(x)
+        x=Dense(units=self.__num_classes,activation='softmax', kernel_initializer='he_normal',name='dense1')(x)
         
         
         
