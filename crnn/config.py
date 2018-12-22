@@ -32,5 +32,5 @@ TRAIN_H=32
 
 
 #===============train=================================
-EPOCHS=10
-BATCH_SIZE=64
+EPOCHS=30
+BATCH_SIZE=32

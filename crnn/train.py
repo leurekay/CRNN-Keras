@@ -40,9 +40,9 @@ valid_dir=config.VALID_DIR
 
 epochs= config.EPOCHS
 batch_size=config.BATCH_SIZE
-init_epoch=0  #identical with the prefix  of load_weights_path
-#load_weights_path=os.path.join(checkpoint_dir,'epoch:001-loss:8.321-val_loss:3.018.h5')
-load_weights_path=None
+init_epoch=10  #identical with the prefix  of load_weights_path
+load_weights_path=os.path.join(checkpoint_dir,'010-loss:0.751-val_loss:1.833.h5')
+#load_weights_path=None
 
 crnn=crnn_model.CRNNCTCNetwork('train',256,20,num_class,(train_h,None,3))
 model=crnn.build_network(max_label_length=max_label_length)

@@ -20,7 +20,12 @@ def txt2int(txt,map_dict,max_len):
     box.extend([-1]*max_len)
     return box[:max_len]
 
-
+def int2txt(nums,inverse_map_dict):
+    txt=''
+    for num in nums:
+        char=inverse_map_dict[num]
+        txt+=char
+    return txt
 
 
 
