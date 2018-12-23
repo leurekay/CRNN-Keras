@@ -40,8 +40,8 @@ valid_dir=config.VALID_DIR
 
 epochs= config.EPOCHS
 batch_size=config.BATCH_SIZE
-init_epoch=10  #identical with the prefix  of load_weights_path
-load_weights_path=os.path.join(checkpoint_dir,'010-loss:0.751-val_loss:1.833.h5')
+init_epoch=15  #identical with the prefix  of load_weights_path
+load_weights_path=os.path.join(checkpoint_dir,'015-loss:0.454-val_loss:2.118.h5')
 #load_weights_path=None
 
 crnn=crnn_model.CRNNCTCNetwork('train',256,20,num_class,(train_h,None,3))
