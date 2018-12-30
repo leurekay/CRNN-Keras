@@ -16,6 +16,8 @@ from keras.optimizers import Adadelta
 
 import json
 import os
+import sys
+sys.path.append('../')
 
 from utils import crnn_model
 from utils import load_data

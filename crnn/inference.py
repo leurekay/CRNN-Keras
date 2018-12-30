@@ -14,6 +14,8 @@ from keras.callbacks import LearningRateScheduler, ModelCheckpoint
 
 import json
 import os
+import sys
+sys.path.append('../')
 import cv2
 import numpy as np
 from matplotlib import pyplot as plt
@@ -24,7 +26,7 @@ from utils import load_data
 from crnn import config
 
 
-data_dir='../data/synth90k/valid/671/2'
+data_dir='../data/synth90k/valid/671/3'
 file_list=os.listdir(data_dir)
 check_dir=config.CHECKPOINT_DIR
 check_path=os.path.join(check_dir,'024-loss:0.233-val_loss:2.540.h5')
