@@ -64,12 +64,14 @@ class TextData(object):
         assert index<self.__nums__
         image,txt=self.__raw_item__(index)
 #        image=image/255.
-        width,height=self.resize_shape
-        try:
-            image = cv2.resize(image, (width, height))    
-        except:
-            print (index,txt)
-            return -99,[-99],-99
+        
+        if self.resize_shape:
+            width,height=self.resize_shape
+            try:
+                image = cv2.resize(image, (width, height))    
+            except:
+                print (index,txt)
+                return -99,[-99],-99
             
         label=txt2int(txt,self.map_dict,self.max_label_len)
 #        print (index,txt)

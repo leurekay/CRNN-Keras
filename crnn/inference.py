@@ -60,7 +60,7 @@ class Inference(crnn_model.CRNNCTCNetwork):
 
         y_pred_txt=load_data.int2txt(y_pred_labels,self.inverse_dict)
         y_pred_prob = keras.backend.get_value(prob)
-        y_pred_prob=np.exp(-y_pred_prob)
+        y_pred_prob=np.exp(-y_pred_prob)[0][0]
         
         return y_pred_labels,y_pred_txt,y_pred_prob
         
